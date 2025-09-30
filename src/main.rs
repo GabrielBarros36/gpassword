@@ -1,5 +1,5 @@
 use std::error::Error;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::{fs, process};
 
 fn main() {
@@ -9,7 +9,7 @@ fn main() {
     println!("Hello, world!");
 }
 
-fn init(custom_dir: Option<&Path>) -> Result<(), Box<dyn Error>> {
+fn init(custom_dir: Option<&Path>) -> Result<PathBuf, Box<dyn Error>> {
     let vault_dir = match custom_dir {
         Some(dir) => dir.to_path_buf(),
         None => dirs::home_dir().ok_or("Could not determine home directory")?,
@@ -18,9 +18,10 @@ fn init(custom_dir: Option<&Path>) -> Result<(), Box<dyn Error>> {
     let exists = Path::exists(&vault_path);
     if !exists {
         fs::File::create(&vault_path)?;
+        fs::write(&vault_path, "{}")?;
     }
 
-    Ok(())
+    Ok(vault_dir)
 }
 
 #[cfg(test)]
@@ -43,6 +44,8 @@ mod tests {
         assert!(!vault_path.exists());
         assert!(init(Some(temp_path)).is_ok());
         assert!(vault_path.exists());
+        let content = fs::read_to_string(&vault_path).expect("Could not read vault file");
+        assert_eq!(content, "{}");
     }
 
     #[test]

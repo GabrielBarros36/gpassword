@@ -35,7 +35,7 @@ mod tests {
         }
         "#;
 
-        let vault: Vault = get_vault(&data).unwrap();
+        let vault: Vault = get_vault(data).unwrap();
 
         assert_eq!(vault.item_list.len(), 2);
         assert_eq!(vault.item_list[0].username, "Gabe1");
