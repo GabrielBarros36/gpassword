@@ -1,8 +1,10 @@
 use jiff::Timestamp;
+use uuid::Uuid;
 //use serde::{Deserialize, Serialize};
 
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize, Clone)]
 pub struct LoginItem {
+    pub id: Uuid,
     pub username: String, // can be an email
     pub password: String,
     #[serde(with = "jiff::fmt::serde::timestamp::second::required")]
